@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Clique Rápido</title>
+    <!-- Inclui o Tailwind CSS para estilização rápida e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos personalizados para a fonte Inter e o corpo da página */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* Fundo escuro */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Garante que o body ocupe toda a altura da viewport */
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: #e2e8f0; /* Cor de texto padrão */
+        }
+
+        /* Animação simples para o botão ao ser clicado */
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pop-animation {
+            animation: pop 0.2s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Contêiner principal do jogo -->
+    <div class="max-w-xl w-full mx-auto p-8 bg-gray-800 rounded-2xl shadow-2xl text-center border border-gray-700">
+        <h1 class="text-5xl font-extrabold mb-8 text-blue-400">
+            Jogo de Clique Rápido!
+        </h1>
+
+        <p class="text-2xl mb-6">
+            Pontuação: <span id="scoreDisplay" class="font-bold text-green-400 text-4xl">0</span>
+        </p>
+
+        <!-- Botão principal do jogo -->
+        <button
+            id="clickButton"
+            class="bg-blue-600 text-white font-bold py-5 px-10 rounded-full text-3xl shadow-lg hover:bg-blue-700 transition-all duration-200 transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-75 relative overflow-hidden"
+            aria-label="Clique para ganhar pontos"
+        >
+            Clique Aqui!
+            <span class="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 pointer-events-none rounded-full" id="rippleEffect"></span>
+        </button>
+
+        <!-- Botão de reset -->
+        <button
+            id="resetButton"
+            class="mt-8 bg-red-500 text-white font-semibold py-3 px-6 rounded-lg text-lg shadow-md hover:bg-red-600 transition-colors duration-200 active:scale-95 transform"
+            aria-label="Reiniciar jogo"
+        >
+            Reiniciar Jogo
+        </button>
+    </div>
+
+    <script>
+        // Função principal que será executada quando a página for totalmente carregada
+        window.onload = function() {
+            // Obtém referências aos elementos HTML
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const clickButton = document.getElementById('clickButton');
+            const resetButton = document.getElementById('resetButton');
+            const rippleEffect = document.getElementById('rippleEffect');
+
+            let score = 0; // Variável para armazenar a pontuação
+
+            // Função para atualizar a pontuação na tela
+            function updateScoreDisplay() {
+                scoreDisplay.textContent = score;
+            }
+
+            // Função para lidar com o clique no botão principal
+            function handleClick() {
+                score++; // Incrementa a pontuação
+                updateScoreDisplay(); // Atualiza a exibição da pontuação
+
+                // Adiciona uma animação de "pop" ao botão
+                clickButton.classList.add('pop-animation');
+                // Remove a classe da animação após um curto período para que ela possa ser acionada novamente
+                setTimeout(() => {
+                    clickButton.classList.remove('pop-animation');
+                }, 200);
+
+                // Efeito de "ripple" (onda) ao clicar
+                rippleEffect.style.left = event.offsetX + 'px';
+                rippleEffect.style.top = event.offsetY + 'px';
+                rippleEffect.classList.add('opacity-50', 'scale-150');
+                setTimeout(() => {
+                    rippleEffect.classList.remove('opacity-50', 'scale-150');
+                }, 500);
+            }
+
+            // Função para reiniciar o jogo
+            function resetGame() {
+                score = 0; // Zera a pontuação
+                updateScoreDisplay(); // Atualiza a exibição
+                alert("Jogo Reiniciado! Clique novamente para começar."); // Mensagem de confirmação
+            }
+
+            // Adiciona os event listeners aos botões
+            clickButton.addEventListener('click', handleClick);
+            resetButton.addEventListener('click', resetGame);
+
+            // Inicializa a exibição da pontuação ao carregar a página
+            updateScoreDisplay();
+        };
+    </script>
+</body>
+</html>
